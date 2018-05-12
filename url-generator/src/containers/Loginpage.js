@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import '../css/style.css';
 import {Form,FormGroup,Input} from 'reactstrap';
-import {base} from '../components/base'
+import {base} from '../components/base';
+import {Link} from 'react-router';
 
-class Login extends Component {
+class Loginpage extends Component {
 
     constructor(props){
         super(props);
         this.state = {
-            tester: {
-            },
-            name:'',
-            pass:''
+            users: [],
+            username:'',
+            password:''
         }
         this.changeUserInput = this.changeUserInput.bind(this);
         this.changePassInput = this.changePassInput.bind(this);
@@ -20,36 +20,51 @@ class Login extends Component {
     }
 
     componentDidMount(){
-        this.testerRef = base.syncState('tester',{
+        base.syncState('User',{
             context: this,
-            state: 'tester' 
+            state: 'users' 
         });
     }
 
     changeUserInput(event){
         this.setState({
-            name : event.target.value
+            username : event.target.value
         });
     }
 
     changePassInput(event){
         this.setState({
-            pass : event.target.value
+            password : event.target.value
         });
     }
     
     checkUserPass(event){
-        event.preventDefault();
-        if(this.state.name==this.state.tester.username || this.state.name==this.state.tester.email){
-            if(this.state.pass==this.state.tester.password){
+        let isCorrect = false;
+        this.state.users.map((user)=>{
+            if(user.username==this.state.username||user.email==this.state.username){
+                if(user.password==this.state.password){
+                    isCorrect = true;
+                }
+            }
+        });
+        if(this.state.username&&this.state.password){
+            if(isCorrect){
                 alert("Login Successful!");
-                this.props.setLoginStatus(true);
                 
+                this.props.setLoginStatus(true);
+                this.props.setUser(this.state.username);
                 this.props.router.push({
                     pathname: '/'
-                })
+                })   
             }
+            else{
+                alert("Username or password are incorrect.");
+            }    
         }
+        else{
+            alert("Please fill all information.");
+        }
+        event.preventDefault()
     }
 
     render() {
@@ -61,16 +76,11 @@ class Login extends Component {
                     <br/>
                     <Form onSubmit={this.checkUserPass}>
                         <FormGroup>
-                            <Input type="text" onChange={this.changeUserInput} value={this.state.name}  placeholder="Email address or username" /><br/>
-                            <Input type="password" onChange={this.changePassInput} value={this.state.pass} placeholder="Password" /><br/>
+                            <Input type="text" onChange={this.changeUserInput} value={this.state.username}  placeholder="Email address or username" /><br/>
+                            <Input type="password" onChange={this.changePassInput} value={this.state.password} placeholder="Password" /><br/>
                             <Input type="submit" value="Log in" style={{color: 'white',backgroundColor:'green'}}/>
                         </FormGroup>
-                        <h6>For Admin,</h6>
-                        <p>
-                            Email: {this.state.tester.email}<br/>
-                            Username: {this.state.tester.username}<br/>
-                            Password: {this.state.tester.password}
-                        </p>
+                        <p>Don't have an account? <Link to="/register">Sign Up Now</Link></p>
                     </Form>
                 </div>
             </div>
@@ -78,4 +88,4 @@ class Login extends Component {
     }
 }
 
-export default Login;
+export default Loginpage;
