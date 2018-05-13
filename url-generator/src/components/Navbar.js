@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router';
-import {Button, Label} from 'reactstrap';
+import {Button,UncontrolledDropdown,DropdownToggle,DropdownMenu,DropdownItem} from 'reactstrap';
 
 class Navbar extends Component {
     signOut = () => {
-        this.props.setLoginStatus(false);
         this.props.setUser('');
+        this.props.setLoginStatus(false);
     }
 
     render() {
@@ -18,11 +18,23 @@ class Navbar extends Component {
                                 <Link to="/login" style={{color: 'white'}} activeStyle={{color: 'white'}}>Sign In</Link>
                             </Button>
         if(this.props.isLogin){
-            statisticButton =   <Button>
-                                    <Link to="/stat" style={{color: 'white'}} activeStyle={{color: 'white'}}>Statistic</Link>
-                                </Button>
-            loginButton = <Button onClick={this.signOut}>Sign out</Button>
-            registerButton = <Label>{this.props.user}</Label>
+            // statisticButton =   <Button>
+            //                         <Link to="/stat" style={{color: 'white'}} activeStyle={{color: 'white'}}>Statistic</Link>
+            //                     </Button>
+            loginButton = <UncontrolledDropdown nav inNavbar>
+                                <DropdownToggle nav caret>
+                                    {this.props.user}
+                                </DropdownToggle>
+                                <DropdownMenu right>
+                                    <DropdownItem>
+                                        <Link to="/stat" >History</Link>
+                                    </DropdownItem>
+                                    <DropdownItem onClick={this.signOut}>
+                                        Sign out
+                                    </DropdownItem>
+                                </DropdownMenu>
+                            </UncontrolledDropdown>
+            registerButton = '';
         }
         return (
             <nav className="navbar navbar-expand-lg bg-secondary fixed-top text-uppercase" id="mainNav">

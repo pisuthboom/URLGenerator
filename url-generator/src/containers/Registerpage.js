@@ -67,7 +67,7 @@ class Registerpage extends Component {
                             password: this.state.password
                         })
                     })
-                    console.log(this.state.users);
+                    // console.log(this.state.users);
                     alert("Register Successful!");
                     
                     this.props.setLoginStatus(true);

@@ -19,17 +19,6 @@ app.get('/', (req, res) => {
   res.send('Back-end for URL Generator');
 })
 
-app.get('/numclick/:hash', (req, res) => {
-  let url = 'http://bit.ly/'+req.params.hash;
-  console.log(url)
-  bitly.clicks(url)
-  .then(response => {
-    console.log(response.data)
-      res.send(response.data)
-  })
-
-})
-
 app.post('/', (req, res) => {
   let link = req.body.link;
   bitly.shorten(link)
@@ -41,7 +30,16 @@ app.post('/', (req, res) => {
   .catch(function(error) {
     console.error(error);
   });
+})
 
+app.post('/numclick', (req, res) => {
+    let url = req.body.link;
+    console.log(url)
+    bitly.clicks(url)
+    .then(response => {
+      console.log(response)
+        res.send(response)
+    })
 })
 
 app.listen(3001, () => console.log('Example app listening on port 3001!'))

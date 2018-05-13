@@ -3,7 +3,9 @@ import Loginpage from './containers/Loginpage';
 import Homepage from './containers/Homepage';
 import {Route,Router,browserHistory} from 'react-router';
 import Statpage from './containers/Statpage';
-import Registerpage from './containers/Registerpage'
+import Registerpage from './containers/Registerpage';
+import {base} from './components/base';
+
 class App extends Component {
   
   state = {
@@ -13,19 +15,31 @@ class App extends Component {
     history:[],
     user:''
   }
+
+  componentDidMount(){
+    base.syncState('History',{
+        context: this,
+        state: 'history',
+        asArray: true
+    })
+
+  }
+
   setUser = (username) => {
     this.setState({
       user: username
     });
   }
-  setHistory = (url,longurl,hash) => {
-    let info = {
-      shortlink: url,
-      longlink: longurl,
-      hash: hash
-    }
+
+  setHistory = (url,longurl,hash,click) => {
     this.setState({
-      history: [...this.state.history,info]
+      history: this.state.history.concat({
+          shortlink: url,
+          longlink: longurl,
+          hash: hash,
+          username: this.state.user,
+          clicks: click
+      })
     });
   }
 
@@ -44,10 +58,9 @@ class App extends Component {
      
     return (
       <Router history={browserHistory}>
-        <Route path="/" component={(props) => <Homepage {...props} isLogin={this.state.isLogin} setLoginStatus={this.setLoginStatus} setUser={this.setUser} user={this.state.user}
-          isShorten={this.state.isShorten} setShorten={this.setShorten} setHistory={this.setHistory} shortenUrl={this.state.shortenUrl}/>} />
+        <Route path="/" component={(props) => <Homepage {...props} isLogin={this.state.isLogin} setLoginStatus={this.setLoginStatus} setUser={this.setUser} user={this.state.user} history={this.state.history} isShorten={this.state.isShorten} setShorten={this.setShorten} setHistory={this.setHistory} shortenUrl={this.state.shortenUrl}/>} />
         <Route path="/login" component={(props) => <Loginpage {...props} isLogin={this.state.isLogin} setLoginStatus={this.setLoginStatus} setUser={this.setUser}/>} />
-        <Route path="/stat" component={(props) => <Statpage {...props} isLogin={this.state.isLogin} setLoginStatus={this.setLoginStatus} history={this.state.history} />} />
+        <Route path="/stat" component={(props) => <Statpage {...props} isLogin={this.state.isLogin} setLoginStatus={this.setLoginStatus} history={this.state.history} user={this.state.user} setUser={this.setUser}/>} />
         <Route path="/register" component={(props) => <Registerpage {...props} isLogin={this.state.isLogin} setLoginStatus={this.setLoginStatus} setUser={this.setUser}/>} />
       </Router>
     );
